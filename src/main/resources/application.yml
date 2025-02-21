@@ -1,0 +1,16 @@
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: PRM392_GroupProjectBE
+  datasource:
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
+    url: ${DB_URL}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+jwt:
+  secret: ${JWT_SECRET}
+

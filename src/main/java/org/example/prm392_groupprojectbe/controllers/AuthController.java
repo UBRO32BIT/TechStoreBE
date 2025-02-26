@@ -1,8 +1,10 @@
 package org.example.prm392_groupprojectbe.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.example.prm392_groupprojectbe.dtos.BaseResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.auth.requests.LoginRequestDTO;
 import org.example.prm392_groupprojectbe.dtos.auth.requests.RegisterRequestDTO;
+import org.example.prm392_groupprojectbe.dtos.auth.response.AuthResponseDTO;
 import org.example.prm392_groupprojectbe.entities.Account;
 import org.example.prm392_groupprojectbe.services.AuthService;
 import org.example.prm392_groupprojectbe.utils.JwtUtil;
@@ -28,20 +30,33 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO requestDTO) {
+    public ResponseEntity<BaseResponseDTO> register(@RequestBody RegisterRequestDTO requestDTO) {
         accountService.register(requestDTO);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(
+                BaseResponseDTO.builder()
+                        .data(null)
+                        .success(true)
+                        .build()
+        );
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
+    public ResponseEntity<BaseResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );
 
         UserDetails userDetails = accountService.loadUserByUsername(loginRequest.getEmail());
         String jwt = jwtUtil.generateToken(userDetails);
+        AuthResponseDTO responseDTO = AuthResponseDTO.builder()
+                .token(jwt)
+                .build();
 
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok(
+                BaseResponseDTO.builder()
+                        .data(responseDTO)
+                        .success(true)
+                        .build()
+        );
     }
 }

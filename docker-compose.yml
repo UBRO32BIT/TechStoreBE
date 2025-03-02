@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  tech-store-be:
+    image: tech-store-be
+    build:
+      context: .
+      dockerfile: Dockerfile  # Optional if the Dockerfile is named differently
+    ports:
+      - "8080:8080"
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      JWT_SECRET: ${JWT_SECRET}
+    restart: always  # Ensure container restarts on failure
+    deploy:
+      resources:
+        limits:
+          memory: 512M

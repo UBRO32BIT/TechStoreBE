@@ -51,6 +51,9 @@ public class Account extends AbstractEntity<Long> implements UserDetails {
     @Enumerated(EnumType.STRING)
     private AccountStatusEnum status;
 
+    @Column(nullable = false)
+    private boolean isBanned = false;
+
     @Column(nullable = true)
     private AccountGenderEnum gender;
 

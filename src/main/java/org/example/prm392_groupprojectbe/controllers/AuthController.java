@@ -60,7 +60,7 @@ public class AuthController {
         );
     }
 
-    @PutMapping("/update-profile")
+    @PatchMapping("/update-profile")
     public ResponseEntity<BaseResponseDTO> updateProfile(@RequestBody UpdateProfileRequestDTO requestDTO) {
         AccountResponseDTO updatedAccount = accountService.updateProfile(requestDTO);
         return ResponseEntity.ok(

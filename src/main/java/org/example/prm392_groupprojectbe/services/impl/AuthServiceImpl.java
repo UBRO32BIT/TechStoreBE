@@ -55,10 +55,15 @@ public class AuthServiceImpl implements AuthService {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
 
-        currentAccount.setName(requestDTO.getName());
-        currentAccount.setPhoneNumber(requestDTO.getPhoneNumber());
-        currentAccount.setGender(requestDTO.getGender());
-
+        if (requestDTO.getName() != null) {
+            currentAccount.setName(requestDTO.getName());
+        }
+        if (requestDTO.getPhoneNumber() != null) {
+            currentAccount.setPhoneNumber(requestDTO.getPhoneNumber());
+        }
+        if (requestDTO.getGender() != null) {
+            currentAccount.setGender(requestDTO.getGender());
+        }
         if (requestDTO.getAvatar() != null) {
             currentAccount.setAvatar(requestDTO.getAvatar());
         }

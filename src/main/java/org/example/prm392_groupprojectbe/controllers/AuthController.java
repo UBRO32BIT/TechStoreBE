@@ -3,9 +3,7 @@ package org.example.prm392_groupprojectbe.controllers;
 import lombok.RequiredArgsConstructor;
 import org.example.prm392_groupprojectbe.dtos.BaseResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.accounts.AccountResponseDTO;
-import org.example.prm392_groupprojectbe.dtos.auth.requests.LoginRequestDTO;
-import org.example.prm392_groupprojectbe.dtos.auth.requests.RegisterRequestDTO;
-import org.example.prm392_groupprojectbe.dtos.auth.requests.UpdateProfileRequestDTO;
+import org.example.prm392_groupprojectbe.dtos.auth.requests.*;
 import org.example.prm392_groupprojectbe.dtos.auth.response.AuthResponseDTO;
 import org.example.prm392_groupprojectbe.services.AuthService;
 import org.example.prm392_groupprojectbe.utils.JwtUtil;
@@ -21,19 +19,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("**")
 @RequiredArgsConstructor
 public class AuthController {
-
-    @Lazy
     private final AuthService accountService;
-    @Lazy
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<BaseResponseDTO> register(@RequestBody RegisterRequestDTO requestDTO) {
         accountService.register(requestDTO);
         return ResponseEntity.ok(
                 BaseResponseDTO.builder()
-                        .message("Register successfully.")
+                        .message("Register successfully, please check your email to confirm verification")
                         .data(null)
                         .success(true)
                         .build()
@@ -42,18 +35,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<BaseResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-        );
-
-        UserDetails userDetails = accountService.loadUserByUsername(loginRequest.getEmail());
-        String jwt = jwtUtil.generateToken(userDetails);
-        AuthResponseDTO responseDTO = AuthResponseDTO.builder()
-                .token(jwt)
-                .build();
-
+        AuthResponseDTO responseDTO = accountService.login(loginRequest);
         return ResponseEntity.ok(
                 BaseResponseDTO.builder()
+                        .message("Login successfully")
                         .data(responseDTO)
                         .success(true)
                         .build()
@@ -67,6 +52,30 @@ public class AuthController {
                 BaseResponseDTO.builder()
                         .message("Profile updated successfully.")
                         .data(updatedAccount)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @PostMapping("/send-verify-email")
+    public ResponseEntity<BaseResponseDTO> sendVerifyEmail(@RequestBody SendOtpRequestDTO requestDTO) {
+        accountService.sendOtp(requestDTO);
+        return ResponseEntity.ok(
+                BaseResponseDTO.builder()
+                        .message("OTP sent to your email.")
+                        .data(null)
+                        .success(true)
+                        .build()
+        );
+    }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<BaseResponseDTO> verifyEmail(@RequestBody VerifyOtpRequestDTO requestDTO) {
+        accountService.verifyOtp(requestDTO);
+        return ResponseEntity.ok(
+                BaseResponseDTO.builder()
+                        .message("Verify account successfully")
+                        .data(null)
                         .success(true)
                         .build()
         );

@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,8 +52,20 @@ public class Account extends AbstractEntity<Long> implements UserDetails {
     @Enumerated(EnumType.STRING)
     private AccountStatusEnum status;
 
+    @Column(nullable = false)
+    private boolean isBanned = false;
+
     @Column(nullable = true)
     private AccountGenderEnum gender;
+
+    @Column(nullable = true)
+    private String otp;
+
+    @Column(nullable = true)
+    private LocalDateTime otpExpiry;
+
+    @Column(nullable = true)
+    private LocalDateTime otpCreatedAt;
 
     @Transient
     @Override
@@ -95,5 +108,9 @@ public class Account extends AbstractEntity<Long> implements UserDetails {
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean isOtpValid(String otp) {
+        return this.otp != null && this.otp.equals(otp) && this.otpExpiry.isAfter(LocalDateTime.now());
     }
 }

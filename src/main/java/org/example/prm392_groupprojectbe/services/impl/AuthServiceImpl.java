@@ -66,9 +66,9 @@ public class AuthServiceImpl implements AuthService {
                 .otpExpiry(LocalDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES))
                 .otpCreatedAt(LocalDateTime.now())
                 .build();
-        Account savedAccount =accountRepository.save(account);
+        Account savedAccount = accountRepository.save(account);
 
-        emailService.sendVerifyAccountEmail(account.getEmail(), account.getName(), account.getOtp());
+        //emailService.sendVerifyAccountEmail(account.getEmail(), account.getName(), account.getOtp());
 
         return savedAccount;
     }
@@ -92,9 +92,9 @@ public class AuthServiceImpl implements AuthService {
 
         Account account = accountRepository.findByEmail(requestDTO.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
-        if (!AccountStatusEnum.VERIFIED.equals(account.getStatus())) {
-            throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFIED);
-        }
+//        if (!AccountStatusEnum.VERIFIED.equals(account.getStatus())) {
+//            throw new AppException(ErrorCode.ACCOUNT_NOT_VERIFIED);
+//        }
         String jwt = jwtUtil.generateToken(account);
         return AuthResponseDTO.builder()
                 .token(jwt)

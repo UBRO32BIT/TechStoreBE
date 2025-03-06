@@ -26,7 +26,7 @@ public class AuthController {
         accountService.register(requestDTO);
         return ResponseEntity.ok(
                 BaseResponseDTO.builder()
-                        .message("Register successfully, please check your email to confirm verification")
+                        .message("Register successfully.")
                         .data(null)
                         .success(true)
                         .build()

@@ -1,6 +1,6 @@
 package org.example.prm392_groupprojectbe.controllers;
 
-import org.example.prm392_groupprojectbe.dtos.ProductCategoryDTO;
+import org.example.prm392_groupprojectbe.dtos.productscategory.ProductCategoryDTO;
 import org.example.prm392_groupprojectbe.entities.ProductCategory;
 import org.example.prm392_groupprojectbe.services.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

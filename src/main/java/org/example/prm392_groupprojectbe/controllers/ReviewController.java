@@ -1,6 +1,6 @@
 package org.example.prm392_groupprojectbe.controllers;
 
-import org.example.prm392_groupprojectbe.dtos.ReviewDTO;
+import org.example.prm392_groupprojectbe.dtos.review.ReviewDTO;
 import org.example.prm392_groupprojectbe.entities.Review;
 import org.example.prm392_groupprojectbe.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,8 @@ public class ReviewController {
 
     // Tạo đánh giá
     @PostMapping
-    public ResponseEntity<Review> createReview(@RequestParam Long userId, @RequestBody ReviewDTO reviewDTO) {
-        Review createdReview = reviewService.createReview(userId, reviewDTO);
+    public ResponseEntity<Review> createReview(@RequestBody ReviewDTO reviewDTO) {
+        Review createdReview = reviewService.createReview(reviewDTO);
         return ResponseEntity.ok(createdReview);
     }
 

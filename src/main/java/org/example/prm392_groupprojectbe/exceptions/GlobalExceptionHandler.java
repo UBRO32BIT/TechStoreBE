@@ -1,6 +1,7 @@
 package org.example.prm392_groupprojectbe.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.persistence.EntityNotFoundException;
 import org.example.prm392_groupprojectbe.dtos.BaseResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,20 @@ public class GlobalExceptionHandler {
                 BaseResponseDTO.builder()
                         .message("Invalid date format. Please use ISO format for dates.")
                         .errorCode(ErrorCode.INVALID_DATE_FORMAT.getCode())
+                        .success(false)
+                        .build()
+        );
+    }
+
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<BaseResponseDTO> handleEntityNotFoundException(EntityNotFoundException ex) {
+        logger.error("Entity not found: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                BaseResponseDTO.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ErrorCode.RESOURCE_NOT_FOUND.getCode())
                         .success(false)
                         .build()
         );

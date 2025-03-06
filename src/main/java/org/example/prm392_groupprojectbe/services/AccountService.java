@@ -1,6 +1,8 @@
 package org.example.prm392_groupprojectbe.services;
 
 import org.example.prm392_groupprojectbe.dtos.accounts.AccountResponseDTO;
+import org.example.prm392_groupprojectbe.dtos.auth.requests.ChangePasswordRequestDTO;
+import org.example.prm392_groupprojectbe.entities.Account;
 import org.example.prm392_groupprojectbe.enums.AccountRoleEnum;
 import org.example.prm392_groupprojectbe.enums.AccountStatusEnum;
 import org.springframework.data.domain.Page;
@@ -14,7 +16,7 @@ public interface AccountService {
 
     void unbanUser(Long id);
 
-    void changePassword(Long userId, String oldPassword, String newPassword);
-    
+    void changePassword(Long userId, ChangePasswordRequestDTO request);
+
     Account findById(Long userId);
 }

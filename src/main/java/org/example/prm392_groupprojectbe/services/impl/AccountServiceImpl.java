@@ -3,9 +3,12 @@ package org.example.prm392_groupprojectbe.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.prm392_groupprojectbe.dtos.accounts.AccountResponseDTO;
+import org.example.prm392_groupprojectbe.dtos.auth.requests.ChangePasswordRequestDTO;
 import org.example.prm392_groupprojectbe.entities.Account;
 import org.example.prm392_groupprojectbe.enums.AccountRoleEnum;
 import org.example.prm392_groupprojectbe.enums.AccountStatusEnum;
+import org.example.prm392_groupprojectbe.exceptions.AppException;
+import org.example.prm392_groupprojectbe.exceptions.ErrorCode;
 import org.example.prm392_groupprojectbe.mappers.AccountMapper;
 import org.example.prm392_groupprojectbe.repositories.AccountRepository;
 import org.example.prm392_groupprojectbe.services.AccountService;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -59,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
 
         // Kiểm tra mật khẩu cũ
         if (!passwordEncoder.matches(request.getOldPassword(), account.getPassword())) {
-            throw new AppException("Old password is incorrect");
+            throw new AppException(ErrorCode.OLD_PASSWORD_INCORRECT);
         }
 
         // Cập nhật mật khẩu mới

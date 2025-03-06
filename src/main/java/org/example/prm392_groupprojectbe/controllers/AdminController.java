@@ -1,20 +1,27 @@
 package org.example.prm392_groupprojectbe.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.prm392_groupprojectbe.dtos.accounts.AccountResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.request.GetOrdersRequestDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.response.OrderResponseDTO;
+import org.example.prm392_groupprojectbe.dtos.product.request.CreateProductRequestDTO;
+import org.example.prm392_groupprojectbe.dtos.product.request.UpdateProductRequestDTO;
+import org.example.prm392_groupprojectbe.entities.Product;
 import org.example.prm392_groupprojectbe.enums.AccountRoleEnum;
 import org.example.prm392_groupprojectbe.enums.AccountStatusEnum;
 import org.example.prm392_groupprojectbe.enums.OrderStatus;
 import org.example.prm392_groupprojectbe.services.AccountService;
 import org.example.prm392_groupprojectbe.services.OrderService;
+import org.example.prm392_groupprojectbe.services.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -23,6 +30,7 @@ import java.time.LocalDateTime;
 public class AdminController {
     private final AccountService accountService;
     private final OrderService orderService;
+    private final ProductService productService;
 
     @GetMapping("/accounts")
     public ResponseEntity<Page<AccountResponseDTO>> getUsers(
@@ -77,5 +85,33 @@ public class AdminController {
     @GetMapping("/orders/{id}")
     public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
+    }
+
+    @GetMapping("/products")
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        return productService.getProductById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody CreateProductRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequestDTO dto) {
+        return ResponseEntity.ok(productService.updateProduct(id, dto));
+    }
+
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }

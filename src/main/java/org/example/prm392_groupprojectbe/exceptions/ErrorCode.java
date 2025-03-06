@@ -20,9 +20,11 @@ public enum ErrorCode {
     ACCOUNT_BANNED(104, "The current account is banned", HttpStatus.FORBIDDEN),
     ACCOUNT_LOCKED(105, "The current account is locked", HttpStatus.FORBIDDEN),
     ACCOUNT_NOT_VERIFIED(106, "The current account is not verified", HttpStatus.FORBIDDEN),
-    ACCOUNT_NOT_FOUND(106, "Account not found", HttpStatus.NOT_FOUND),
+    ACCOUNT_NOT_FOUND(107, "Account not found", HttpStatus.NOT_FOUND),
+    OLD_PASSWORD_INCORRECT(108, "Old password is incorrect", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(200, "User not found", HttpStatus.NOT_FOUND),
     ORDER_NOT_FOUND(300, "Order not found", HttpStatus.NOT_FOUND),
+    CATEGORY_NOT_FOUND(400, "Category not found", HttpStatus.NOT_FOUND),
     ;
 
     private final Integer code;

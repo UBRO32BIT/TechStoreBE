@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Page<AccountResponseDTO> getUsers(int page, int size, String search, AccountRoleEnum role, AccountStatusEnum status) {
@@ -49,5 +50,25 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         account.setBanned(false);
         accountRepository.save(account);
+    }
+
+    @Override
+    public void changePassword(Long userId, ChangePasswordRequestDTO request) {
+        Account account = accountRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User  not found"));
+
+        // Kiểm tra mật khẩu cũ
+        if (!passwordEncoder.matches(request.getOldPassword(), account.getPassword())) {
+            throw new AppException("Old password is incorrect");
+        }
+
+        // Cập nhật mật khẩu mới
+        account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        accountRepository.save(account);
+    }
+
+    @Override
+    public Account findById(Long userId) {
+        return accountRepository.findById(userId).orElse(null);
     }
 }

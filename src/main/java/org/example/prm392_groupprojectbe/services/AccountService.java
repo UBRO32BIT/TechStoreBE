@@ -13,4 +13,8 @@ public interface AccountService {
     void banUser(Long id);
 
     void unbanUser(Long id);
+
+    void changePassword(Long userId, String oldPassword, String newPassword);
+    
+    Account findById(Long userId);
 }

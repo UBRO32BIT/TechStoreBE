@@ -1,7 +1,7 @@
 package org.example.prm392_groupprojectbe.controllers;
 
 import org.example.prm392_groupprojectbe.entities.Product;
-import org.example.prm392_groupprojectbe.services.ProductServiceInterface;
+import org.example.prm392_groupprojectbe.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    private ProductServiceInterface productService;
+    private ProductService productService;
 
     @GetMapping
     public List<Product> getAllProducts() {

@@ -2,7 +2,7 @@ package org.example.prm392_groupprojectbe.services.impl;
 
 import org.example.prm392_groupprojectbe.entities.Product;
 import org.example.prm392_groupprojectbe.repositories.ProductRepository;
-import org.example.prm392_groupprojectbe.services.ProductServiceInterface;
+import org.example.prm392_groupprojectbe.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductServiceImpl implements ProductServiceInterface {
+public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;

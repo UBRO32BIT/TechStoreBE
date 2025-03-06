@@ -5,7 +5,7 @@ import org.example.prm392_groupprojectbe.entities.Product;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductServiceInterface {
+public interface ProductService {
     List<Product> getAllProducts();
     Optional<Product> getProductById(Long id);
     Product createProduct(Product product);

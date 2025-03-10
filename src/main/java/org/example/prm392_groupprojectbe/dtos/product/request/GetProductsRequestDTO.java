@@ -17,8 +17,6 @@ public class GetProductsRequestDTO {
     private String search;
     private Integer minStock;
     private Integer maxStock;
-    private int pageNumber;
-    private int pageSize;
     private String sortBy;
     private Sort.Direction direction;
 }

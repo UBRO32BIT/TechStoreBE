@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    Page<Product> getByParameters(GetProductsRequestDTO requestDTO);
+    List<Product> getByParameters(GetProductsRequestDTO requestDTO);
 
     List<Product> getAllProducts();
     Optional<Product> getProductById(Long id);

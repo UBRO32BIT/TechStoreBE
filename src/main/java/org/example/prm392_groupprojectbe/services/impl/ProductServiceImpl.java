@@ -28,14 +28,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductCategoryRepository categoryRepository;
 
     @Override
-    public Page<Product> getByParameters(GetProductsRequestDTO requestDTO) {
-        List<String> allowedSortFields = List.of("id", "name", "price", "stock", "category");
+    public List<Product> getByParameters(GetProductsRequestDTO requestDTO) {
+        List<String> allowedSortFields = List.of("id", "name", "price", "stock", "category", "createdAt", "updatedAt");
         if (!allowedSortFields.contains(requestDTO.getSortBy())) {
-            throw new AppException(ErrorCode.INVALID_SORT_FIELD);
+            requestDTO.setSortBy("createdAt");
         }
 
         Sort sort = Sort.by(requestDTO.getDirection(), requestDTO.getSortBy());
-        Pageable pageable = PageRequest.of(requestDTO.getPageNumber(), requestDTO.getPageSize(), sort);
 
         return productRepository.findByParameters(
                 requestDTO.getCategoryId(),
@@ -44,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
                 requestDTO.getSearch(),
                 requestDTO.getMinStock(),
                 requestDTO.getMaxStock(),
-                pageable
+                sort
         );
     }
 

@@ -4,7 +4,6 @@ import org.example.prm392_groupprojectbe.dtos.product.request.GetProductsRequest
 import org.example.prm392_groupprojectbe.entities.Product;
 import org.example.prm392_groupprojectbe.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +19,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Page<Product>> getProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<List<Product>> getProducts(
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "DESC") Sort.Direction direction,
             @RequestParam(required = false) Long categoryId,
@@ -39,13 +36,11 @@ public class ProductController {
                 .search(search)
                 .minStock(minStock)
                 .maxStock(maxStock)
-                .pageNumber(page)
-                .pageSize(size)
                 .sortBy(sortBy)
                 .direction(direction)
                 .build();
 
-        Page<Product> products = productService.getByParameters(requestDTO);
+        List<Product> products = productService.getByParameters(requestDTO);
         return ResponseEntity.ok(products);
     }
 }

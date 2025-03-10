@@ -19,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -31,6 +33,12 @@ public class AccountServiceImpl implements AccountService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Account> accounts = accountRepository.findByFilters(search, role, status, pageable);
         return accounts.map(accountMapper::toDTO);
+    }
+
+    @Override
+    public List<AccountResponseDTO> getAllUsers() {
+        List<Account> accounts = accountRepository.findAll();
+        return accounts.stream().map(accountMapper::toDTO).toList();
     }
 
     @Override

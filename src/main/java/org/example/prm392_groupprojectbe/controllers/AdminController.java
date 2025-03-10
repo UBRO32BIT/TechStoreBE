@@ -32,15 +32,20 @@ public class AdminController {
     private final OrderService orderService;
     private final ProductService productService;
 
+//    @GetMapping("/accounts")
+//    public ResponseEntity<Page<AccountResponseDTO>> getUsers(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(required = false) String search,
+//            @RequestParam(required = false) AccountRoleEnum role,
+//            @RequestParam(required = false) AccountStatusEnum status) {
+//        Page<AccountResponseDTO> users = accountService.getUsers(page, size, search, role, status);
+//        return ResponseEntity.ok(users);
+//    }
+
     @GetMapping("/accounts")
-    public ResponseEntity<Page<AccountResponseDTO>> getUsers(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) AccountRoleEnum role,
-            @RequestParam(required = false) AccountStatusEnum status) {
-        Page<AccountResponseDTO> users = accountService.getUsers(page, size, search, role, status);
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<AccountResponseDTO>> getAllUsers() {
+        return ResponseEntity.ok(accountService.getAllUsers());
     }
 
     @GetMapping("/accounts/{id}")
@@ -60,26 +65,31 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+//    @GetMapping("/orders")
+//    public ResponseEntity<Page<OrderResponseDTO>> getOrders(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(defaultValue = "createdAt") String sortBy,
+//            @RequestParam(defaultValue = "DESC") Sort.Direction direction,
+//            @RequestParam(required = false) LocalDateTime startDate,
+//            @RequestParam(required = false) LocalDateTime endDate,
+//            @RequestParam(required = false) OrderStatus status) {
+//        GetOrdersRequestDTO requestDTO = GetOrdersRequestDTO.builder()
+//                .startDate(startDate)
+//                .endDate(endDate)
+//                .pageNumber(page)
+//                .pageSize(size)
+//                .sortBy(sortBy)
+//                .status(status)
+//                .direction(direction)
+//                .build();
+//        Page<OrderResponseDTO> orders = orderService.getAllOrders(requestDTO);
+//        return ResponseEntity.ok(orders);
+//    }
+
     @GetMapping("/orders")
-    public ResponseEntity<Page<OrderResponseDTO>> getOrders(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "DESC") Sort.Direction direction,
-            @RequestParam(required = false) LocalDateTime startDate,
-            @RequestParam(required = false) LocalDateTime endDate,
-            @RequestParam(required = false) OrderStatus status) {
-        GetOrdersRequestDTO requestDTO = GetOrdersRequestDTO.builder()
-                .startDate(startDate)
-                .endDate(endDate)
-                .pageNumber(page)
-                .pageSize(size)
-                .sortBy(sortBy)
-                .status(status)
-                .direction(direction)
-                .build();
-        Page<OrderResponseDTO> orders = orderService.getAllOrders(requestDTO);
-        return ResponseEntity.ok(orders);
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getOrders());
     }
 
     @GetMapping("/orders/{id}")

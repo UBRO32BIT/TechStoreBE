@@ -7,8 +7,12 @@ import org.example.prm392_groupprojectbe.enums.AccountRoleEnum;
 import org.example.prm392_groupprojectbe.enums.AccountStatusEnum;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface AccountService {
     Page<AccountResponseDTO> getUsers(int page, int size, String search, AccountRoleEnum role, AccountStatusEnum status);
+
+    List<AccountResponseDTO> getAllUsers();
 
     AccountResponseDTO getUserById(Long id);
 

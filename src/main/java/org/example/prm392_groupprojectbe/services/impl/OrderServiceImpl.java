@@ -57,6 +57,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderResponseDTO> getOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(orderMapper::toDto).toList();
+    }
+
+    @Override
     public OrderResponseDTO updateOrder(Long id, Order updatedOrder) {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));

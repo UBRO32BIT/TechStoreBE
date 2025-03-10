@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 BaseResponseDTO.builder()
-                        .message(ErrorCode.INTERNAL_SERVER_ERROR.getMessage())
+                        .message(ex.getMessage())
                         .errorCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                         .success(false)
                         .build()

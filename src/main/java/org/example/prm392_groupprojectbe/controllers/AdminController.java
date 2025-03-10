@@ -3,6 +3,7 @@ package org.example.prm392_groupprojectbe.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.prm392_groupprojectbe.dtos.accounts.AccountResponseDTO;
+import org.example.prm392_groupprojectbe.dtos.auth.requests.UpdateProfileRequestDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.request.GetOrdersRequestDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.response.OrderResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.product.request.CreateProductRequestDTO;
@@ -51,6 +52,11 @@ public class AdminController {
     @GetMapping("/accounts/{id}")
     public ResponseEntity<AccountResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.getUserById(id));
+    }
+
+    @PatchMapping("/accounts/{id}")
+    public ResponseEntity<AccountResponseDTO> updateUser(@PathVariable Long id, @RequestBody UpdateProfileRequestDTO requestDTO) {
+        return ResponseEntity.ok(accountService.updateUser(id, requestDTO));
     }
 
     @PutMapping("/accounts/{id}/ban")
@@ -114,7 +120,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(dto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequestDTO dto) {
         return ResponseEntity.ok(productService.updateProduct(id, dto));
     }

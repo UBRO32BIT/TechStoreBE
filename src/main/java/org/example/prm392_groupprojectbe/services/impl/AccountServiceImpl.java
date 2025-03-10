@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.prm392_groupprojectbe.dtos.accounts.AccountResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.auth.requests.ChangePasswordRequestDTO;
+import org.example.prm392_groupprojectbe.dtos.auth.requests.UpdateProfileRequestDTO;
 import org.example.prm392_groupprojectbe.entities.Account;
 import org.example.prm392_groupprojectbe.enums.AccountRoleEnum;
 import org.example.prm392_groupprojectbe.enums.AccountStatusEnum;
@@ -77,6 +78,28 @@ public class AccountServiceImpl implements AccountService {
         // Cập nhật mật khẩu mới
         account.setPassword(passwordEncoder.encode(request.getNewPassword()));
         accountRepository.save(account);
+    }
+
+    @Override
+    public AccountResponseDTO updateUser(Long accountId, UpdateProfileRequestDTO requestDTO) {
+        Account currentAccount = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (requestDTO.getName() != null) {
+            currentAccount.setName(requestDTO.getName());
+        }
+        if (requestDTO.getPhoneNumber() != null) {
+            currentAccount.setPhoneNumber(requestDTO.getPhoneNumber());
+        }
+        if (requestDTO.getGender() != null) {
+            currentAccount.setGender(requestDTO.getGender());
+        }
+        if (requestDTO.getAvatar() != null) {
+            currentAccount.setAvatar(requestDTO.getAvatar());
+        }
+
+        Account result = accountRepository.save(currentAccount);
+        return accountMapper.toDTO(result);
     }
 
     @Override

@@ -93,7 +93,7 @@ public class Account extends AbstractEntity<Long> implements UserDetails {
     @Transient
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return !this.isBanned;
     }
 
     @Transient

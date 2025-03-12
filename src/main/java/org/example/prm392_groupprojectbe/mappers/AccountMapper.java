@@ -15,6 +15,7 @@ public class AccountMapper {
                 .avatar(account.getAvatar())
                 .role(account.getRole())
                 .status(account.getStatus())
+                .gender(account.getGender())
                 .isBanned(account.isBanned())
                 .build();
     }

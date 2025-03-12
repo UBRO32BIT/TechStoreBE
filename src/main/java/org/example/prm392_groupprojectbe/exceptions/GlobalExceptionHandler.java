@@ -1,6 +1,7 @@
 package org.example.prm392_groupprojectbe.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.persistence.EntityNotFoundException;
 import org.example.prm392_groupprojectbe.dtos.BaseResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,13 +97,27 @@ public class GlobalExceptionHandler {
         );
     }
 
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<BaseResponseDTO> handleEntityNotFoundException(EntityNotFoundException ex) {
+        logger.error("Entity not found: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                BaseResponseDTO.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ErrorCode.RESOURCE_NOT_FOUND.getCode())
+                        .success(false)
+                        .build()
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponseDTO> handleGenericException(Exception ex) {
         logger.error("Unexpected error occurred: {}", ex.getMessage(), ex);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 BaseResponseDTO.builder()
-                        .message(ErrorCode.INTERNAL_SERVER_ERROR.getMessage())
+                        .message(ex.getMessage())
                         .errorCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                         .success(false)
                         .build()

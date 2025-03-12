@@ -16,12 +16,15 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByEmail(String email);
 
-    @Query("SELECT a FROM Account a WHERE " +
-            "(:search IS NULL OR a.name LIKE %:search% OR a.email LIKE %:search%) " +
-            "AND (:role IS NULL OR a.role = :role) " +
-            "AND (:status IS NULL OR a.status = :status)")
+    @Query("""
+    SELECT a FROM Account a WHERE 
+    (:search IS NULL OR a.name LIKE CONCAT('%', :search, '%') OR a.email LIKE CONCAT('%', :search, '%'))
+    AND (:role IS NULL OR a.role = :role)
+    AND (:status IS NULL OR a.status = :status)
+""")
     Page<Account> findByFilters(@Param("search") String search,
                                 @Param("role") AccountRoleEnum role,
                                 @Param("status") AccountStatusEnum status,
                                 Pageable pageable);
+
 }

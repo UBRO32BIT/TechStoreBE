@@ -1,11 +1,14 @@
 package org.example.prm392_groupprojectbe.controllers;
 
+import org.example.prm392_groupprojectbe.dtos.product.request.GetProductsRequestDTO;
 import org.example.prm392_groupprojectbe.entities.Product;
-import org.example.prm392_groupprojectbe.services.ProductServiceInterface;
+import org.example.prm392_groupprojectbe.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -13,33 +16,37 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    private ProductServiceInterface productService;
+    private ProductService productService;
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") Sort.Direction direction,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Integer minStock,
+            @RequestParam(required = false) Integer maxStock) {
+
+        GetProductsRequestDTO requestDTO = GetProductsRequestDTO.builder()
+                .categoryId(categoryId)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
+                .search(search)
+                .minStock(minStock)
+                .maxStock(maxStock)
+                .sortBy(sortBy)
+                .direction(direction)
+                .build();
+
+        List<Product> products = productService.getByParameters(requestDTO);
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        return productService.getProductById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
-        return ResponseEntity.ok(productService.updateProduct(id, productDetails));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 }

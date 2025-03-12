@@ -1,5 +1,6 @@
 package org.example.prm392_groupprojectbe.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.prm392_groupprojectbe.dtos.BaseResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.accounts.AccountResponseDTO;
@@ -22,7 +23,7 @@ public class AuthController {
     private final AuthService accountService;
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponseDTO> register(@RequestBody RegisterRequestDTO requestDTO) {
+    public ResponseEntity<BaseResponseDTO> register(@RequestBody @Valid RegisterRequestDTO requestDTO) {
         accountService.register(requestDTO);
         return ResponseEntity.ok(
                 BaseResponseDTO.builder()
@@ -34,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
+    public ResponseEntity<BaseResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequest) {
         AuthResponseDTO responseDTO = accountService.login(loginRequest);
         return ResponseEntity.ok(
                 BaseResponseDTO.builder()

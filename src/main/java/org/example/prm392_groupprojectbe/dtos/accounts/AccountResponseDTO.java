@@ -1,6 +1,7 @@
 package org.example.prm392_groupprojectbe.dtos.accounts;
 
 import lombok.*;
+import org.example.prm392_groupprojectbe.enums.AccountGenderEnum;
 import org.example.prm392_groupprojectbe.enums.AccountRoleEnum;
 import org.example.prm392_groupprojectbe.enums.AccountStatusEnum;
 
@@ -18,4 +19,5 @@ public class AccountResponseDTO {
     private Boolean isBanned;
     private AccountRoleEnum role;
     private AccountStatusEnum status;
+    private AccountGenderEnum gender;
 }

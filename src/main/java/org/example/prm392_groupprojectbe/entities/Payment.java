@@ -37,4 +37,7 @@ public class Payment extends AbstractEntity<Long> {
 
     @Column(length = 100)
     private String transactionId;
+
+    @Column(length = 100)
+    private String extTransactionId;
 }

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE " +
@@ -21,4 +22,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("status") OrderStatus status,
             Pageable pageable
     );
+
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderDetails WHERE o.user.id = :userId AND o.isDeleted = false")
+    List<Order> findByUserIdAndIsDeletedFalse(Long userId);
 }

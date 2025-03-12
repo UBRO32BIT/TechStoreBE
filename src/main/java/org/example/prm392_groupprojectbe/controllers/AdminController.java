@@ -110,9 +110,7 @@ public class AdminController {
 
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        return productService.getProductById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping("/products")

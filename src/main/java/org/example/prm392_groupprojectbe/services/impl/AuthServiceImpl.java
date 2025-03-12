@@ -84,10 +84,10 @@ public class AuthServiceImpl implements AuthService {
             throw new AppException(ErrorCode.WRONG_CREDENTIALS);
         }
         catch (DisabledException e) {
-            throw new AppException(ErrorCode.ACCOUNT_BANNED);
+            throw new AppException(ErrorCode.ACCOUNT_DISABLED);
         }
         catch (LockedException e) {
-            throw new AppException(ErrorCode.ACCOUNT_LOCKED);
+            throw new AppException(ErrorCode.ACCOUNT_BANNED);
         }
 
         Account account = accountRepository.findByEmail(requestDTO.getEmail())

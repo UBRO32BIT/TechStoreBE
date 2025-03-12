@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+    private static final Integer JWT_EXPIRY_MILLISECONDS = 72 * 60 * 60 * 1000;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -46,7 +47,7 @@ public class JwtUtil {
                 .setSubject(account.getUsername())
                 .claim("role", account.getRole().name())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRY_MILLISECONDS))
                 .signWith(signingKey, SignatureAlgorithm.HS256) // Use Key object
                 .compact();
     }

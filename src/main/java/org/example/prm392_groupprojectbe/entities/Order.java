@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.example.prm392_groupprojectbe.enums.OrderStatus;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -28,4 +29,7 @@ public class Order extends AbstractEntity<Long> {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetails;
 }

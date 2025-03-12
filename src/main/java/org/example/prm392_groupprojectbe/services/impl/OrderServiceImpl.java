@@ -20,6 +20,7 @@ import org.example.prm392_groupprojectbe.exceptions.AppException;
 import org.example.prm392_groupprojectbe.exceptions.ErrorCode;
 import org.example.prm392_groupprojectbe.mappers.OrderMapper;
 import org.example.prm392_groupprojectbe.proxy.ZaloPayProxy;
+import org.example.prm392_groupprojectbe.repositories.AccountRepository;
 import org.example.prm392_groupprojectbe.repositories.OrderDetailRepository;
 import org.example.prm392_groupprojectbe.repositories.OrderRepository;
 import org.example.prm392_groupprojectbe.repositories.ProductRepository;
@@ -49,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final ZaloPayProxy zaloPayProxy;
     private final ObjectMapper objectMapper;
+    private final AccountRepository accountRepository;
 
     @Override
     @Transactional
@@ -177,6 +179,16 @@ public class OrderServiceImpl implements OrderService {
         if (account == null) {
             throw new AppException(ErrorCode.USER_NOT_FOUND);
         }
+        List<Order> result = orderRepository.findByUserIdAndIsDeletedFalse(account.getId());
+        return result.stream()
+                .map(order -> orderMapper.toDto(order, order.getOrderDetails(), null))
+                .toList();
+    }
+
+    @Override
+    public List<OrderResponseDTO> getOrdersByUserId(Long accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         List<Order> result = orderRepository.findByUserIdAndIsDeletedFalse(account.getId());
         return result.stream()
                 .map(order -> orderMapper.toDto(order, order.getOrderDetails(), null))

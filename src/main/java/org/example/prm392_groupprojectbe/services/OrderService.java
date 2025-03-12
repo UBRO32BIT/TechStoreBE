@@ -19,5 +19,7 @@ public interface OrderService {
 
     List<OrderResponseDTO> getOrdersByCurrentUser();
 
+    List<OrderResponseDTO> getOrdersByUserId(Long accountId);
+
     OrderResponseDTO updateOrder(Long id, Order updatedOrder);
 }

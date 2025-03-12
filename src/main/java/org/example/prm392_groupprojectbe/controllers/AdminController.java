@@ -71,6 +71,12 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/accounts/{id}/orders")
+    public ResponseEntity<List<OrderResponseDTO>> getOrdersByUserId(@PathVariable Long id) {
+        List<OrderResponseDTO> result = orderService.getOrdersByUserId(id);
+        return ResponseEntity.ok(result);
+    }
+
 //    @GetMapping("/orders")
 //    public ResponseEntity<Page<OrderResponseDTO>> getOrders(
 //            @RequestParam(defaultValue = "0") int page,

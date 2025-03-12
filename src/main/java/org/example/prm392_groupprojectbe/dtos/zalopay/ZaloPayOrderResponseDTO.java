@@ -34,4 +34,6 @@ public class ZaloPayOrderResponseDTO {
 
     @JsonAlias("qr_code")
     private String qrCode;
+
+    private Integer appId;
 }

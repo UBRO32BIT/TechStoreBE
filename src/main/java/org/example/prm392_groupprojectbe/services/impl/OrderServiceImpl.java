@@ -131,6 +131,8 @@ public class OrderServiceImpl implements OrderService {
             if (paymentDetail.getReturnCode() != 1) {
                 throw new RuntimeException(paymentDetail.getSubReturnMessage());
             }
+            paymentDetail.setAppId(requestDTO.getAppId());
+
             return paymentDetail;
         }
         catch (FeignException ex) {

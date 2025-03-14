@@ -146,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseDTO getOrderById(Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
-        return orderMapper.toDto(order, null, null);
+        return orderMapper.toDto(order, order.getOrderDetails(), null);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderResponseDTO> getOrders() {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().map(order -> orderMapper.toDto(order, null, null)).toList();
+        return orders.stream().map(order -> orderMapper.toDto(order, order.getOrderDetails(), null)).toList();
     }
 
     @Override
@@ -202,7 +202,7 @@ public class OrderServiceImpl implements OrderService {
         existingOrder.setTotalPrice(updatedOrder.getTotalPrice());
         existingOrder.setStatus(updatedOrder.getStatus());
         Order savedOrder = orderRepository.save(existingOrder);
-        return orderMapper.toDto(savedOrder, null, null);
+        return orderMapper.toDto(savedOrder, savedOrder.getOrderDetails(), null);
     }
 }
 

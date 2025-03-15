@@ -1,33 +1,32 @@
 package org.example.prm392_groupprojectbe.services.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.example.prm392_groupprojectbe.constants.ZaloPayConstants;
 import org.example.prm392_groupprojectbe.dtos.cartitem.CartItemDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.request.CreateOrderRequestDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.request.GetOrdersRequestDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.response.OrderResponseDTO;
-import org.example.prm392_groupprojectbe.dtos.zalopay.ZaloPayCreateOrderRequestDTO;
+import org.example.prm392_groupprojectbe.dtos.payment.response.PaymentResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.zalopay.ZaloPayOrderResponseDTO;
 import org.example.prm392_groupprojectbe.entities.Account;
 import org.example.prm392_groupprojectbe.entities.Order;
 import org.example.prm392_groupprojectbe.entities.OrderDetail;
 import org.example.prm392_groupprojectbe.entities.Product;
 import org.example.prm392_groupprojectbe.enums.OrderStatus;
+import org.example.prm392_groupprojectbe.enums.PaymentMethod;
 import org.example.prm392_groupprojectbe.exceptions.AppException;
 import org.example.prm392_groupprojectbe.exceptions.ErrorCode;
 import org.example.prm392_groupprojectbe.mappers.OrderMapper;
-import org.example.prm392_groupprojectbe.proxy.ZaloPayProxy;
 import org.example.prm392_groupprojectbe.repositories.AccountRepository;
 import org.example.prm392_groupprojectbe.repositories.OrderDetailRepository;
 import org.example.prm392_groupprojectbe.repositories.OrderRepository;
 import org.example.prm392_groupprojectbe.repositories.ProductRepository;
 import org.example.prm392_groupprojectbe.services.OrderService;
+import org.example.prm392_groupprojectbe.services.PaymentService;
+import org.example.prm392_groupprojectbe.services.ProductService;
 import org.example.prm392_groupprojectbe.utils.AccountUtils;
-import org.example.prm392_groupprojectbe.utils.DateUtil;
-import org.example.prm392_groupprojectbe.utils.HMACUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,20 +36,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class OrderServiceImpl implements OrderService {
+    private final ProductService productService;
+    private PaymentService paymentService;
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final OrderMapper orderMapper;
     private final ProductRepository productRepository;
-    private final ZaloPayProxy zaloPayProxy;
-    private final ObjectMapper objectMapper;
     private final AccountRepository accountRepository;
+
+    @Lazy
+    @Autowired
+    public void setPaymentService(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 
     @Override
     @Transactional
@@ -86,7 +90,11 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .user(user)
                 .totalPrice(totalPrice)
-                .status(OrderStatus.PENDING)
+                .status(
+                        PaymentMethod.CASH.equals(requestDTO.getPaymentMethod())
+                                ? OrderStatus.PREPARING
+                                : OrderStatus.PENDING
+                )
                 .build();
 
         Order savedOrder = orderRepository.save(order);
@@ -95,51 +103,13 @@ public class OrderServiceImpl implements OrderService {
         }
         orderDetailRepository.saveAll(orderDetails);
 
-        //CREATE PAYMENT CHECKOUT URL
-        ZaloPayOrderResponseDTO paymentDetail = this.createPaymentUrl(user, order, orderDetails);
+        PaymentResponseDTO payment = paymentService.createPayment(
+                order,
+                orderDetails,
+                requestDTO.getPaymentMethod()
+        );
 
-        return orderMapper.toDto(savedOrder, orderDetails, paymentDetail);
-    }
-
-    private ZaloPayOrderResponseDTO createPaymentUrl(Account account, Order order, List<OrderDetail> orderDetails) {
-        try {
-            ZaloPayCreateOrderRequestDTO requestDTO = ZaloPayCreateOrderRequestDTO.builder()
-                    .appId(ZaloPayConstants.APP_ID)
-                    .appTransId(DateUtil.getCurrentTimeString("yyMMdd") + "_" + new Date().getTime())
-                    .appTime(System.currentTimeMillis())
-                    .appUser(String.valueOf(account.getId()))
-                    .amount(order.getTotalPrice().longValue())
-                    .item("[{}]")
-                    .bankCode(ZaloPayConstants.BANK_CODE)
-                    .embedData("{}")
-                    .description("Payment for order #" + order.getId())
-                    .callbackUrl("")
-                    .build();
-
-            String combinedData = requestDTO.getAppId() + "|"
-                    + requestDTO.getAppTransId() + "|"
-                    + requestDTO.getAppUser() + "|"
-                    + requestDTO.getAmount() + "|"
-                    + requestDTO.getAppTime() +"|"
-                    + requestDTO.getEmbedData() +"|"
-                    + requestDTO.getItem();
-
-            requestDTO.setMac(HMACUtil.HMacHexStringEncode(
-                    HMACUtil.HMACSHA256,
-                    ZaloPayConstants.KEY1,
-                    combinedData
-            ));
-            ZaloPayOrderResponseDTO paymentDetail = zaloPayProxy.createOrder(requestDTO);
-            if (paymentDetail.getReturnCode() != 1) {
-                throw new RuntimeException(paymentDetail.getSubReturnMessage());
-            }
-            paymentDetail.setAppId(requestDTO.getAppId());
-
-            return paymentDetail;
-        }
-        catch (FeignException ex) {
-            throw ex;
-        }
+        return orderMapper.toDto(savedOrder, orderDetails, payment);
     }
 
     @Override
@@ -193,6 +163,19 @@ public class OrderServiceImpl implements OrderService {
         return result.stream()
                 .map(order -> orderMapper.toDto(order, order.getOrderDetails(), null))
                 .toList();
+    }
+
+    @Override
+    public void handlePaymentCompletion(Order order) {
+        order.setStatus(OrderStatus.PREPARING);
+        orderRepository.save(order);
+        List<OrderDetail> orderDetails = order.getOrderDetails();
+        orderDetails.forEach(
+                orderDetail -> productService.updateStockAfterPayment(
+                        orderDetail.getProduct(),
+                        orderDetail.getQuantity()
+                )
+        );
     }
 
     @Override

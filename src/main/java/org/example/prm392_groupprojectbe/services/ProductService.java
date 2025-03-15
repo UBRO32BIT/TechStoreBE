@@ -18,4 +18,6 @@ public interface ProductService {
     Product updateProduct(Long id, UpdateProductRequestDTO dto);
 
     void deleteProduct(Long id);
+
+    void updateStockAfterPayment(Product product, Integer quantity);
 }

@@ -25,7 +25,7 @@ public class Payment extends AbstractEntity<Long> {
     private Order order;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private PaymentMethod paymentMethod;
 
     @Column(nullable = false)
@@ -34,6 +34,12 @@ public class Payment extends AbstractEntity<Long> {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
+
+    @Column(name = "is_paid", nullable = false)
+    private boolean isPaid = false;
+
+    @Column(name = "is_refunded", nullable = false)
+    private boolean isRefunded = false;
 
     @Column(length = 100)
     private String transactionId;

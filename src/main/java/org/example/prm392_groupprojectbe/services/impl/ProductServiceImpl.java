@@ -12,14 +12,10 @@ import org.example.prm392_groupprojectbe.exceptions.ErrorCode;
 import org.example.prm392_groupprojectbe.repositories.ProductCategoryRepository;
 import org.example.prm392_groupprojectbe.repositories.ProductRepository;
 import org.example.prm392_groupprojectbe.services.ProductService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -94,5 +90,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateStockAfterPayment(Product product, Integer quantity) {
+        if (product.getStock() < quantity) {
+            throw new AppException(ErrorCode.INVALID_STOCK);
+        }
+        product.setStock(product.getStock() - quantity);
+        productRepository.save(product);
     }
 }

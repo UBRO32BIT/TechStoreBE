@@ -8,7 +8,7 @@ public class ZaloPayConstants {
     public static final String KEY2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
     public static final String BANK_CODE = "zalopayapp";
     public static final String ZALOPAY_ENDPOINTS = "https://sb-openapi.zalopay.vn/v2";
-    public static final String ZALOPAY_CALLBACK_URL = "http://techstore.32mine.net:8080/payment/zalopay-callback";
+    public static final String ZALOPAY_CALLBACK_URL = "http://techstore.32mine.net:8080/payment/zalopay-callback-handler";
     public static final String ZALOPAY_ORDER_CREATE_ENDPOINT
             = "/create";
 

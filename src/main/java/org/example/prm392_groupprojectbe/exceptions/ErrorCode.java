@@ -28,6 +28,7 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(400, "Category not found", HttpStatus.NOT_FOUND),
     PAYMENT_FAILED(600, "Payment failed from external provider", HttpStatus.BAD_REQUEST),
     PAYMENT_NOT_FOUND(601, "Payment not found", HttpStatus.NOT_FOUND),
+    INVALID_STOCK(602, "Invalid stock", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
 
     private final Integer code;

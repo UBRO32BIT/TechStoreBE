@@ -17,11 +17,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @SuperBuilder
 public class OrderDetail extends AbstractEntity<Long> {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

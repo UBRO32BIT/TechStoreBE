@@ -2,6 +2,7 @@ package org.example.prm392_groupprojectbe.dtos.orders.response;
 
 import lombok.*;
 import org.example.prm392_groupprojectbe.dtos.orderdetail.response.OrderDetailResponseDTO;
+import org.example.prm392_groupprojectbe.dtos.payment.response.PaymentResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.zalopay.ZaloPayOrderResponseDTO;
 import org.example.prm392_groupprojectbe.enums.OrderStatus;
 
@@ -20,7 +21,7 @@ public class OrderResponseDTO {
     private BigDecimal totalPrice;
     private OrderStatus status;
     private List<OrderDetailResponseDTO> orderDetail;
-    private ZaloPayOrderResponseDTO zalopay;
+    private PaymentResponseDTO payment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

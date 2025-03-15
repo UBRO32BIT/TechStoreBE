@@ -1,6 +1,7 @@
 package org.example.prm392_groupprojectbe.mappers;
 
 import org.example.prm392_groupprojectbe.dtos.orders.response.OrderResponseDTO;
+import org.example.prm392_groupprojectbe.dtos.payment.response.PaymentResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.zalopay.ZaloPayOrderResponseDTO;
 import org.example.prm392_groupprojectbe.entities.Order;
 import org.example.prm392_groupprojectbe.entities.OrderDetail;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Component
 public class OrderMapper {
-    public OrderResponseDTO toDto(Order order, List<OrderDetail> orderDetail, ZaloPayOrderResponseDTO zalopay) {
+    public OrderResponseDTO toDto(Order order, List<OrderDetail> orderDetail, PaymentResponseDTO payment) {
         if (order == null) {
             return null;
         }
@@ -25,7 +26,7 @@ public class OrderMapper {
                                 .map(OrderDetailMapper::toDTO)
                                 .toList()
                 )
-                .zalopay(zalopay)
+                .payment(payment)
                 .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())

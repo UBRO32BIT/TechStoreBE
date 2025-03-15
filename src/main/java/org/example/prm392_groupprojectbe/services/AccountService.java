@@ -21,7 +21,7 @@ public interface AccountService {
 
     void unbanUser(Long id);
 
-    void changePassword(Long userId, ChangePasswordRequestDTO request);
+    void changePassword(ChangePasswordRequestDTO request);
 
     AccountResponseDTO updateUser(Long accountId, UpdateProfileRequestDTO requestDTO);
 

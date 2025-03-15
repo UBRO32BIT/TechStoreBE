@@ -21,5 +21,9 @@ public interface OrderService {
 
     List<OrderResponseDTO> getOrdersByUserId(Long accountId);
 
+    void handlePaymentCompletion(Order order);
+
+    void handleRefund(Order order);
+
     OrderResponseDTO updateOrder(Long id, Order updatedOrder);
 }

@@ -15,8 +15,8 @@ public class AccountController {
     private AccountService accountService;
 
     @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequestDTO request, @RequestParam Long userId) {
-        accountService.changePassword(userId, request);
+    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequestDTO request) {
+        accountService.changePassword(request);
         return ResponseEntity.ok("Password changed successfully");
     }
 }

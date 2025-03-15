@@ -30,6 +30,6 @@ public class Order extends AbstractEntity<Long> {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails;
 }

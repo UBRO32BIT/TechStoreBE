@@ -7,7 +7,6 @@ import org.example.prm392_groupprojectbe.dtos.orders.request.CreateOrderRequestD
 import org.example.prm392_groupprojectbe.dtos.orders.request.GetOrdersRequestDTO;
 import org.example.prm392_groupprojectbe.dtos.orders.response.OrderResponseDTO;
 import org.example.prm392_groupprojectbe.dtos.payment.response.PaymentResponseDTO;
-import org.example.prm392_groupprojectbe.dtos.zalopay.ZaloPayOrderResponseDTO;
 import org.example.prm392_groupprojectbe.entities.Account;
 import org.example.prm392_groupprojectbe.entities.Order;
 import org.example.prm392_groupprojectbe.entities.OrderDetail;
@@ -75,6 +74,10 @@ public class OrderServiceImpl implements OrderService {
             Product product = productRepository.findById(item.getProductId())
                     .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
+            if (product.getStock() < item.getQuantity()) {
+                throw new AppException(ErrorCode.OUT_OF_STOCK);
+            }
+
             BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
             totalPrice = totalPrice.add(itemTotal);
 
@@ -101,13 +104,17 @@ public class OrderServiceImpl implements OrderService {
         for (OrderDetail detail : orderDetails) {
             detail.setOrder(savedOrder);
         }
-        orderDetailRepository.saveAll(orderDetails);
+        List<OrderDetail> savedDetails = orderDetailRepository.saveAll(orderDetails);
 
         PaymentResponseDTO payment = paymentService.createPayment(
                 order,
                 orderDetails,
                 requestDTO.getPaymentMethod()
         );
+
+        if (PaymentMethod.CASH.equals(requestDTO.getPaymentMethod())) {
+            savedDetails.forEach(orderDetail -> productService.updateStockAfterPayment(orderDetail.getProduct(), orderDetail.getQuantity()));
+        }
 
         return orderMapper.toDto(savedOrder, orderDetails, payment);
     }
@@ -172,6 +179,17 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> orderDetails = order.getOrderDetails();
         orderDetails.forEach(
                 orderDetail -> productService.updateStockAfterPayment(
+                        orderDetail.getProduct(),
+                        orderDetail.getQuantity()
+                )
+        );
+    }
+
+    @Override
+    public void handleRefund(Order order) {
+        List<OrderDetail> orderDetails = order.getOrderDetails();
+        orderDetails.forEach(
+                orderDetail -> productService.updateStockAfterOrderFailure(
                         orderDetail.getProduct(),
                         orderDetail.getQuantity()
                 )

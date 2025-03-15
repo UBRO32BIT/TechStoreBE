@@ -20,4 +20,6 @@ public interface ProductService {
     void deleteProduct(Long id);
 
     void updateStockAfterPayment(Product product, Integer quantity);
+
+    void updateStockAfterOrderFailure(Product product, Integer quantity);
 }

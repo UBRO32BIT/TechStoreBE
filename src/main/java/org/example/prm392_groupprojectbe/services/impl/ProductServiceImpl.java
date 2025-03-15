@@ -95,9 +95,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateStockAfterPayment(Product product, Integer quantity) {
         if (product.getStock() < quantity) {
-            throw new AppException(ErrorCode.INVALID_STOCK);
+            throw new AppException(ErrorCode.OUT_OF_STOCK);
         }
         product.setStock(product.getStock() - quantity);
+        productRepository.save(product);
+    }
+
+    @Override
+    public void updateStockAfterOrderFailure(Product product, Integer quantity) {
+        product.setStock(product.getStock() + quantity);
         productRepository.save(product);
     }
 }

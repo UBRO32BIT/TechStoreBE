@@ -25,6 +25,7 @@ public enum ErrorCode {
     OLD_PASSWORD_INCORRECT(108, "Old password is incorrect", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(200, "User not found", HttpStatus.NOT_FOUND),
     ORDER_NOT_FOUND(300, "Order not found", HttpStatus.NOT_FOUND),
+    OUT_OF_STOCK(301, "A product is out of stock", HttpStatus.BAD_REQUEST),
     CATEGORY_NOT_FOUND(400, "Category not found", HttpStatus.NOT_FOUND),
     PAYMENT_FAILED(600, "Payment failed from external provider", HttpStatus.BAD_REQUEST),
     PAYMENT_NOT_FOUND(601, "Payment not found", HttpStatus.NOT_FOUND),

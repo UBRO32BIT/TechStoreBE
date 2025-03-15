@@ -23,5 +23,7 @@ public interface OrderService {
 
     void handlePaymentCompletion(Order order);
 
+    void handleRefund(Order order);
+
     OrderResponseDTO updateOrder(Long id, Order updatedOrder);
 }

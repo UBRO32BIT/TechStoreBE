@@ -13,6 +13,7 @@ import org.example.prm392_groupprojectbe.exceptions.ErrorCode;
 import org.example.prm392_groupprojectbe.mappers.AccountMapper;
 import org.example.prm392_groupprojectbe.repositories.AccountRepository;
 import org.example.prm392_groupprojectbe.services.AccountService;
+import org.example.prm392_groupprojectbe.utils.AccountUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -66,9 +67,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void changePassword(Long userId, ChangePasswordRequestDTO request) {
-        Account account = accountRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User  not found"));
+    public void changePassword(ChangePasswordRequestDTO request) {
+        Account account = AccountUtils.getCurrentAccount();
+        if (account == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
 
         // Kiểm tra mật khẩu cũ
         if (!passwordEncoder.matches(request.getOldPassword(), account.getPassword())) {
